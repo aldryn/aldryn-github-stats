@@ -1,0 +1,9 @@
+aldryn_github_stats/__init__.py
+aldryn_github_stats/cms_plugins.py
+aldryn_github_stats/models.py
+aldryn_github_stats.egg-info/PKG-INFO
+aldryn_github_stats.egg-info/SOURCES.txt
+aldryn_github_stats.egg-info/dependency_links.txt
+aldryn_github_stats.egg-info/not-zip-safe
+aldryn_github_stats.egg-info/requires.txt
+aldryn_github_stats.egg-info/top_level.txt

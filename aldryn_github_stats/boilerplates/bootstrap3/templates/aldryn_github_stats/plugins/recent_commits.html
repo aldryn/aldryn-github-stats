@@ -1,0 +1,8 @@
+{% load i18n %}
+
+<div class="aldryn-github-stats recent-commits-plugin">
+    <h1>{{ instance.recent_commits }}</h1>
+    <h5>
+        {% blocktrans with days=instance.from_days_ago %}Commits in the last {{ days }} days{% endblocktrans %}
+    </h5>
+</div>
