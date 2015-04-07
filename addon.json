@@ -1,0 +1,7 @@
+{
+    "package-name": "aldryn_github_stats",
+    "installed-apps": [
+        "django.contrib.humanize",
+        "aldryn_github_stats"
+    ]
+}

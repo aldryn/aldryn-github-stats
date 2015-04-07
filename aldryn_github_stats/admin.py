@@ -8,15 +8,15 @@ from django.contrib import admin
 from . import models
 
 
-class GitHubStatsGitHubTokenAdminForm(forms.ModelForm):
+class GitHubStatsRepositoryAdminForm(forms.ModelForm):
     class Meta:
-        model = models.GitHubStatsGitHubToken
+        model = models.GitHubStatsRepository
         widgets = {
-            'token' : forms.PasswordInput(),
+            'token': forms.PasswordInput(),
         }
 
 
-class GitHubStatsGitHubTokenAdmin(admin.ModelAdmin):
-    form = GitHubStatsGitHubTokenAdminForm
+class GitHubStatsRepositoryAdmin(admin.ModelAdmin):
+    form = GitHubStatsRepositoryAdminForm
 
-admin.site.register(models.GitHubStatsGitHubToken, GitHubStatsGitHubTokenAdmin)
+admin.site.register(models.GitHubStatsRepository, GitHubStatsRepositoryAdmin)

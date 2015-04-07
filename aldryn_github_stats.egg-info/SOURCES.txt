@@ -1,4 +1,6 @@
+setup.py
 aldryn_github_stats/__init__.py
+aldryn_github_stats/admin.py
 aldryn_github_stats/cms_plugins.py
 aldryn_github_stats/models.py
 aldryn_github_stats.egg-info/PKG-INFO
@@ -7,3 +9,6 @@ aldryn_github_stats.egg-info/dependency_links.txt
 aldryn_github_stats.egg-info/not-zip-safe
 aldryn_github_stats.egg-info/requires.txt
 aldryn_github_stats.egg-info/top_level.txt
+aldryn_github_stats/migrations/0001_initial.py
+aldryn_github_stats/migrations/0002_auto__add_githubstatsgithubtoken__del_field_githubstatsrecentcommitspl.py
+aldryn_github_stats/migrations/__init__.py

@@ -1,10 +1,10 @@
 {% load i18n humanize %}
 
-<div class="aldryn-github-stats recent-commits-plugin">
-    <h1>{{ instance.recent_commits|intcomma }}</h1>
+<div class="aldryn-github-stats recent-issues-plugin">
+    <h1>{{ instance.recent_issues|intcomma }}</h1>
     <h5>
-        {% blocktrans with days=instance.from_days_ago|intcomma %}
-        Commits in last {{ days }} days
+        {% blocktrans with days=instance.from_days_ago|intcomma state=instance.state|capfirst %}
+        {{ state }} issues in last {{ days }} days
         {% endblocktrans %}
     </h5>
     {% if instance.subhead %}
