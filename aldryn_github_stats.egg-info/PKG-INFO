@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: aldryn-github-stats
-Version: 0.0.2
+Version: 0.0.6
 Summary: Simple plugin to add dynamic stats from GitHub repos.
 Home-page: https://github.com/aldryn/aldryn-github-stats
 Author: Divio AG

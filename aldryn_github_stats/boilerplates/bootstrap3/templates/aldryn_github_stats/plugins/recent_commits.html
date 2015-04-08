@@ -1,7 +1,7 @@
 {% load i18n humanize %}
 
 <div class="aldryn-github-stats recent-commits-plugin">
-    <h1>{{ instance.recent_commits|intcomma }}</h1>
+    <h1>{{ instance.recent_commits|default_if_none:0|intcomma }}</h1>
     <h5>
         {% blocktrans with days=instance.from_days_ago|intcomma %}
         Commits in last {{ days }} days

@@ -1,7 +1,7 @@
 {% load i18n humanize %}
 
 <div class="aldryn-github-stats property-plugin">
-    <h1>{{ instance.property|intcomma }}</h1>
+    <h1>{{ instance.property|default_if_none:0|intcomma }}</h1>
     <h5>{{ instance.property_label }}</h5>
     {% if instance.subhead %}
     <p class="subhead">

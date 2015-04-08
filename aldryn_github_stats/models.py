@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.core.cache import cache as memcache
 from django.core.validators import MaxValueValidator
 from django.db import models
@@ -14,7 +15,7 @@ from cms.models.pluginmodel import CMSPlugin
 
 from github import Github
 
-ONE_HOUR = 3600
+CACHE_DURATION = getattr(settings, "ALDRYN_GITHUB_STATS_CACHE_DURATION", 3600)
 
 
 @python_2_unicode_compatible
@@ -59,7 +60,7 @@ class GitHubStatsBase(CMSPlugin):
 
     def get_cache_key(self, settings=()):
         """
-        Returns the suitable key for *this* instance and settings.
+        Returns the suitable key for this instance's settings.
 
         Provide a tuple hashable types that should be considered in the hash.
         Typically, this will be the settings that will be used in the calculated
@@ -68,7 +69,7 @@ class GitHubStatsBase(CMSPlugin):
         E.g., key = self.get_cache_key(('divio/django-cms', 'abc123xyz...', 90))
         """
         cls_name = self.__class__.__name__
-        return '#{0}:{1}:{2}'.format(cls_name, self.pk, hash(tuple(settings)))
+        return '#{0}:{1}'.format(cls_name, hash(tuple(settings)))
 
 
 @python_2_unicode_compatible
@@ -102,7 +103,7 @@ class GitHubStatsRecentCommitsPluginModel(GitHubStatsBase):
                             total += commits.total
                 cached_value = total
                 if total is not None:
-                    memcache.set(key, total, ONE_HOUR)
+                    memcache.set(key, total, CACHE_DURATION)
             else:
                 return 0
         return cached_value
@@ -147,7 +148,7 @@ class GitHubStatsIssuesCountPluginModel(GitHubStatsBase):
                     state=self.state, since=days_ago)
                 cached_value = len(list(issues))
                 if cached_value is not None:
-                    memcache.set(key, cached_value, ONE_HOUR)
+                    memcache.set(key, cached_value, CACHE_DURATION)
             else:
                 return 0
         return cached_value
@@ -192,7 +193,7 @@ class GitHubStatsRepoPropertyPluginModel(GitHubStatsBase):
             if repo:
                 cached_value = getattr(repo, self.property_name)
                 if cached_value is not None:
-                    memcache.set(key, cached_value, ONE_HOUR)
+                    memcache.set(key, cached_value, CACHE_DURATION)
             else:
                 return 0
         return cached_value
