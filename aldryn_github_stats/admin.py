@@ -11,6 +11,7 @@ from . import models
 class GitHubStatsRepositoryAdminForm(forms.ModelForm):
     class Meta:
         model = models.GitHubStatsRepository
+        fields = ('label', 'full_name', 'token')
         widgets = {
             'token': forms.PasswordInput(),
         }
@@ -18,5 +19,6 @@ class GitHubStatsRepositoryAdminForm(forms.ModelForm):
 
 class GitHubStatsRepositoryAdmin(admin.ModelAdmin):
     form = GitHubStatsRepositoryAdminForm
+
 
 admin.site.register(models.GitHubStatsRepository, GitHubStatsRepositoryAdmin)
