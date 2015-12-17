@@ -1,57 +1,88 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import migrations, models
+import django.core.validators
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'GitHubStatsRecentCommitsPluginModel'
-        db.create_table(u'aldryn_github_stats_githubstatsrecentcommitspluginmodel', (
-            ('cmsplugin_ptr', self.gf('django.db.models.fields.related.OneToOneField')(related_name=u'+', unique=True, primary_key=True, to=orm['cms.CMSPlugin'])),
-            ('repository', self.gf('django.db.models.fields.CharField')(default=u'', max_length=255)),
-            ('from_days_ago', self.gf('django.db.models.fields.PositiveIntegerField')(default=30)),
-            ('github_api_token', self.gf('django.db.models.fields.CharField')(default=u'', max_length=64)),
-        ))
-        db.send_create_signal(u'aldryn_github_stats', ['GitHubStatsRecentCommitsPluginModel'])
+    dependencies = [
+        ('cms', '0013_urlconfrevision'),
+    ]
 
-
-    def backwards(self, orm):
-        # Deleting model 'GitHubStatsRecentCommitsPluginModel'
-        db.delete_table(u'aldryn_github_stats_githubstatsrecentcommitspluginmodel')
-
-
-    models = {
-        u'aldryn_github_stats.githubstatsrecentcommitspluginmodel': {
-            'Meta': {'object_name': 'GitHubStatsRecentCommitsPluginModel'},
-            'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "u'+'", 'unique': 'True', 'primary_key': 'True', 'to': "orm['cms.CMSPlugin']"}),
-            'from_days_ago': ('django.db.models.fields.PositiveIntegerField', [], {'default': '30'}),
-            'github_api_token': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '64'}),
-            'repository': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '255'})
-        },
-        'cms.cmsplugin': {
-            'Meta': {'object_name': 'CMSPlugin'},
-            'changed_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'language': ('django.db.models.fields.CharField', [], {'max_length': '15', 'db_index': 'True'}),
-            'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'lft': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'parent': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.CMSPlugin']", 'null': 'True', 'blank': 'True'}),
-            'placeholder': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.Placeholder']", 'null': 'True'}),
-            'plugin_type': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'}),
-            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'rght': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'tree_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'})
-        },
-        'cms.placeholder': {
-            'Meta': {'object_name': 'Placeholder'},
-            'default_width': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'slot': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'})
-        }
-    }
-
-    complete_apps = ['aldryn_github_stats']
+    operations = [
+        migrations.CreateModel(
+            name='GitHubStatsIssuesCountPluginModel',
+            fields=[
+                ('cmsplugin_ptr', models.OneToOneField(parent_link=True, related_name='+', primary_key=True, serialize=False, to='cms.CMSPlugin')),
+                ('subhead', models.CharField(default='', help_text='Optional subheading.', max_length=255, verbose_name='subhead', blank=True)),
+                ('subhead_link', models.URLField(default='', help_text='Optional subhead link destination.', max_length=4096, verbose_name='URL', blank=True)),
+                ('from_days_ago', models.PositiveIntegerField(default=30, help_text='Number of days to sum commits (maximum 365)', verbose_name='Number of days ago', validators=[django.core.validators.MaxValueValidator(365)])),
+                ('state', models.CharField(default='closed', help_text='Event type', max_length=16, choices=[('open', 'Open'), ('closed', 'Closed')])),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=('cms.cmsplugin',),
+        ),
+        migrations.CreateModel(
+            name='GitHubStatsRecentCommitsPluginModel',
+            fields=[
+                ('cmsplugin_ptr', models.OneToOneField(parent_link=True, related_name='+', primary_key=True, serialize=False, to='cms.CMSPlugin')),
+                ('subhead', models.CharField(default='', help_text='Optional subheading.', max_length=255, verbose_name='subhead', blank=True)),
+                ('subhead_link', models.URLField(default='', help_text='Optional subhead link destination.', max_length=4096, verbose_name='URL', blank=True)),
+                ('from_days_ago', models.PositiveIntegerField(default=30, help_text='Number of days to sum commits (maximum 365)', verbose_name='Number of days ago', validators=[django.core.validators.MaxValueValidator(365)])),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=('cms.cmsplugin',),
+        ),
+        migrations.CreateModel(
+            name='GitHubStatsRepoPropertyPluginModel',
+            fields=[
+                ('cmsplugin_ptr', models.OneToOneField(parent_link=True, related_name='+', primary_key=True, serialize=False, to='cms.CMSPlugin')),
+                ('subhead', models.CharField(default='', help_text='Optional subheading.', max_length=255, verbose_name='subhead', blank=True)),
+                ('subhead_link', models.URLField(default='', help_text='Optional subhead link destination.', max_length=4096, verbose_name='URL', blank=True)),
+                ('property_name', models.CharField(default='forks_count', help_text='Choose a repository property to display.', max_length=64, verbose_name='property', choices=[('forks_count', 'No. forks'), ('network_count', 'No. networks'), ('open_issues_count', 'No. open issues'), ('size', 'Size'), ('stargazers_count', 'No. stargazers'), ('watchers_count', 'No. watchers')])),
+                ('property_label', models.CharField(default='', help_text='Label to display.', max_length=128, verbose_name='label')),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=('cms.cmsplugin',),
+        ),
+        migrations.CreateModel(
+            name='GitHubStatsRepository',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('label', models.CharField(default='', help_text='Provide a descriptive label for your repo. E.g., "django CMS', max_length=128)),
+                ('full_name', models.CharField(default='', help_text='Enter the repo. full name. E.g., "divio/django-cms"', max_length=255)),
+                ('token', models.CharField(default='', help_text='Provide a suitable GitHub API token.', max_length=64)),
+            ],
+            options={
+                'verbose_name': 'repository',
+                'verbose_name_plural': 'repositories',
+            },
+        ),
+        migrations.AlterUniqueTogether(
+            name='githubstatsrepository',
+            unique_together=set([('label', 'full_name', 'token')]),
+        ),
+        migrations.AddField(
+            model_name='githubstatsrepopropertypluginmodel',
+            name='repo',
+            field=models.ForeignKey(verbose_name='repository', to='aldryn_github_stats.GitHubStatsRepository', help_text='Select the repository to work with.', null=True),
+        ),
+        migrations.AddField(
+            model_name='githubstatsrecentcommitspluginmodel',
+            name='repo',
+            field=models.ForeignKey(verbose_name='repository', to='aldryn_github_stats.GitHubStatsRepository', help_text='Select the repository to work with.', null=True),
+        ),
+        migrations.AddField(
+            model_name='githubstatsissuescountpluginmodel',
+            name='repo',
+            field=models.ForeignKey(verbose_name='repository', to='aldryn_github_stats.GitHubStatsRepository', help_text='Select the repository to work with.', null=True),
+        ),
+    ]
