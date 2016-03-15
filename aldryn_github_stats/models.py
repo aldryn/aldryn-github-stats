@@ -2,12 +2,13 @@
 
 from __future__ import unicode_literals
 
+import logging
 import StringIO
 
 from datetime import datetime, timedelta
 
 from django.conf import settings
-from django.core.cache import cache as memcache
+from django.core.cache import cache
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -18,6 +19,8 @@ from cms.models.pluginmodel import CMSPlugin
 from .utils import get_cache_key
 
 from github import Github
+
+logger = logging.getLogger(__name__)
 
 CACHE_DURATION = getattr(settings, "ALDRYN_GITHUB_STATS_CACHE_DURATION", 3600)
 
@@ -65,18 +68,22 @@ class GitHubStatsRepository(models.Model):
         if force_refresh:
             repo = None
         else:
-            pickled = memcache.get(key, None)
+            pickled = cache.get(key, None)
             if pickled:
                 file_str = StringIO.StringIO(pickled)
                 repo = g.load(file_str)
             else:
                 repo = None
         if repo is None:
+            if force_refresh:
+                logger.info('Forced refresh')
+            else:
+                logger.info('Natural refresh')
             repo = g.get_repo(self.full_name)
             output = StringIO.StringIO()
             g.dump(repo, output)
             duration = CACHE_DURATION * 2 if force_refresh else CACHE_DURATION
-            memcache.set(key, output.getvalue(), duration)
+            cache.set(key, output.getvalue(), duration)
         return repo
 
 
@@ -114,7 +121,7 @@ class GitHubStatsRecentCommitsPluginModel(GitHubStatsBase):
             self.__class__.__name__,
             settings=(self.repo.full_name, self.repo.token, self.from_days_ago))
 
-        cached_value = memcache.get(key)
+        cached_value = cache.get(key)
         if cached_value is None:
             repo = self.repo.get_repo()
             if repo:
@@ -131,7 +138,7 @@ class GitHubStatsRecentCommitsPluginModel(GitHubStatsBase):
                             total += commits.total
                 cached_value = total
                 if total is not None:
-                    memcache.set(key, total, CACHE_DURATION)
+                    cache.set(key, total, CACHE_DURATION)
             else:
                 return 0
         return cached_value
@@ -166,7 +173,7 @@ class GitHubStatsIssuesCountPluginModel(GitHubStatsBase):
             self.__class__.__name__,
             settings=(self.repo.full_name, self.repo.token, self.from_days_ago,
                       self.state))
-        cached_value = memcache.get(key)
+        cached_value = cache.get(key)
         if cached_value is None:
             repo = self.repo.get_repo()
             if repo:
@@ -177,7 +184,7 @@ class GitHubStatsIssuesCountPluginModel(GitHubStatsBase):
                     state=self.state, since=days_ago)
                 cached_value = len(list(issues))
                 if cached_value is not None:
-                    memcache.set(key, cached_value, CACHE_DURATION)
+                    cache.set(key, cached_value, CACHE_DURATION)
             else:
                 return 0
         return cached_value
@@ -216,13 +223,13 @@ class GitHubStatsRepoPropertyPluginModel(GitHubStatsBase):
         key = get_cache_key(
             self.__class__.__name__,
             settings=(self.repo.full_name, self.repo.token, self.property_name))
-        cached_value = memcache.get(key)
+        cached_value = cache.get(key)
         if cached_value is None:
             repo = self.repo.get_repo()
             if repo:
                 cached_value = getattr(repo, self.property_name)
                 if cached_value is not None:
-                    memcache.set(key, cached_value, CACHE_DURATION)
+                    cache.set(key, cached_value, CACHE_DURATION)
             else:
                 return 0
         return cached_value
