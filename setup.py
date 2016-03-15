@@ -3,6 +3,8 @@ from setuptools import setup, find_packages
 from aldryn_github_stats import __version__
 
 REQUIREMENTS = [
+    'Django',
+    'django-cms',
     'PyGithub',
 ]
 
