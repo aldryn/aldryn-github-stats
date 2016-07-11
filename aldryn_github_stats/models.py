@@ -145,7 +145,7 @@ class GitHubStatsRecentCommitsPluginModel(GitHubStatsBase):
 
     def __str__(self):
         return 'Recent commits for %d days on %s' % (
-            self.from_days_ago,
+            self.from_days_ago or 0,
             self.repo.full_name if self.repo else '',
         )
 
